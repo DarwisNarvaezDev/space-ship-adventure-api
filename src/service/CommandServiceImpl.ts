@@ -3,11 +3,16 @@ import { Logger } from "pino";
 import { Command } from "../interfaces/Command";
 import { Server as IoServer } from 'socket.io';
 import { Events } from "../util/Events";
+import { CommandService } from "./ICommandService";
 
 const clientUrl = process.env.CLIENT_URL || 'http://localhost:3000'
 
-export class CommandService {
-    static emitCommandEvent (
+/**
+ * Command service implementation, perform the routing for the app.ts controller
+ * 
+ */
+export class CommandServiceImpl implements CommandService  {
+    emitCommandEvent (
         req: Request,
         res: Response,
         appLogger: Logger,
