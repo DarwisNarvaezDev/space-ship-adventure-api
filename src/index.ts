@@ -2,12 +2,12 @@ import express, { Express, Request, Response } from "express";
 import bodyParser from 'body-parser'
 import cors from 'cors'
 import dotenv from "dotenv";
-import { UrlMappings } from "../enums/UrlMappings";
 import http, { Server } from 'http'
 import { initServer } from "./socket/SocketProvider";
-import { Command } from "./interfaces/Command";
-import { Events } from "./util/Events";
 import { configureLogger } from "./logger/Logger";
+import { Server as IoServer } from 'socket.io';
+import {CommandService} from "./service/CommandService";
+import { UrlMappings } from "./util/UrlMappings";
 
 dotenv.config();
 
@@ -25,31 +25,19 @@ app.use(bodyParser.json());
 
 // Socket init
 const server: Server = http.createServer(app);
-const io = initServer(server, clientUrl, allowedHttpMethods)
-
-app.get(UrlMappings.TEST_ENDPOINT, (req: Request, res: Response) => {
-    res.send("Express + TypeScript Server");
-});
+const io: IoServer = initServer(server, clientUrl, allowedHttpMethods)
 
 app.post(UrlMappings.SEND_COMMAND, (req: Request, res: Response) => {
-    try {
-        const command: Command = req.body
-        if( command ){
-            // Emit the event to client
-            appLogger.info(`Sending event: [${Events.COMMAND_EVENT}] to origin: ${clientUrl}, with payload: [distance: ${command.distance}, speed: ${command.rocketSpeed}, time: ${command.flightTime}])}]`)
-            io.emit(Events.COMMAND_EVENT, command);
-            appLogger.info("Event emitted!")
-            return res.json({message: "Command sent successfully."})
-        }else{
-            appLogger.error("Bad request for event.")
-            res.status(400).json("Please check the command.")
-        }
-    }catch(error: Error | unknown){
-        appLogger.error(`Error while processing the command request: ${error}`)
-        console.error(`Error while processing the command request: ${error}`)
-    }
+    CommandService.emitCommandEvent(
+        req,
+        res,
+        appLogger,
+        io
+    )
 });
 
 server.listen(port, () => {
     appLogger.info(`Server is running at *:${port}`);
 });
+
+export default app;
