@@ -1,10 +1,12 @@
 {
   "name": "space-ship-adventure-api",
-  "type": "module",
+  "type": "commonjs",
   "version": "1.0.0",
   "description": "Rest controller to enable to pass commands to the rocket outside the GUI.",
   "main": "index.js",
   "scripts": {
+    "prod-build": "tsc -p .",
+    "prod-start-api": "export NODE_PATH='${PWD}/build' && npm run prod-build && node ./build/index.js",
     "start-api": "npx tsx ./src/index.ts",
     "test": "jest --watch"
   },
