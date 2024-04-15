@@ -6,9 +6,9 @@ import http, { Server } from 'http'
 import { initServer } from "./socket/SocketProvider";
 import { configureLogger } from "./logger/Logger";
 import { Server as IoServer } from 'socket.io';
-import {CommandService, CommandServiceImpl} from "./service/CommandServiceImpl";
 import { UrlMappings } from "./util/UrlMappings";
 import { CommandService } from "./service/ICommandService";
+import { CommandServiceImpl } from "./service/CommandServiceImpl";
 
 // Configure dotenv
 dotenv.config();
