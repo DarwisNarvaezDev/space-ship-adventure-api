@@ -4,6 +4,9 @@ import { Command } from "../interfaces/Command";
 import { Server as IoServer } from 'socket.io';
 import { Events } from "../util/Events";
 import { CommandService } from "./ICommandService";
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 const clientUrl = process.env.CLIENT_URL || 'http://localhost:3000'
 
